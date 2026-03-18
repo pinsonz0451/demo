@@ -155,8 +155,7 @@ module tb_aligner;
 
             // ---------- Check every output cycle (cycles 1 .. tk_cyc) ----------
             for (tk_c = 1; tk_c <= tk_cyc; tk_c = tk_c + 1) begin
-                @(posedge clk);
-                #1;  // P2 for tk_c=1, P3 for tk_c=2, ...
+                // sampled at negedge clk (middle of the valid cycle)
 
                 // bs_valid must be HIGH throughout valid output
                 if (bs_valid !== 1'b1) begin
@@ -188,11 +187,11 @@ module tb_aligner;
                         tk_err = tk_err + 1;
                     end
                 end
+                @(negedge clk); // advance to next cycle's negedge
             end
 
             // ---------- bs_valid must deassert one cycle after the last bit ----------
-            @(posedge clk);
-            #1;
+            // (already at negedge of the idle cycle)
             if (bs_valid !== 1'b0) begin
                 $display("[FAIL] %s: bs_valid still HIGH after last cycle", tc_name);
                 tk_err = tk_err + 1;
@@ -445,8 +444,7 @@ module tb_aligner;
             @(negedge clk); load = 1'b0;
             
             for (rc = 1; rc <= r_tot; rc = rc + 1) begin
-                @(posedge clk);
-                #1;
+                // sampled at negedge clk
                 for (rch = 0; rch < NUM_CH; rch = rch + 1) begin
                     r_exp = f_bit_ref(r_vec[rch*FP_W +: FP_W], r_emax, r_emin, rc);
                     r_act = bs_out[rch];
@@ -456,9 +454,10 @@ module tb_aligner;
                         r_errs = r_errs + 1;
                     end
                 end
+                @(negedge clk); // advance to next cycle's negedge
             end
-            @(posedge clk);
-            #1;   // one idle cycle between vectors
+            // We are now at negedge of the idle cycle. Wait one more clk for gap.
+            @(negedge clk);
         end
 
         err_total = err_total + r_errs;
