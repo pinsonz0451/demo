@@ -32,4 +32,4 @@ else {
   Write-Host "Compilation failed." -ForegroundColor Red
 }
 
-#powershell -ExecutionPolicy Bypass -File .\run_tb_top.ps1
+#powershell -ExecutionPolicy Bypass -File .\sim\run\run_tb_top.ps1
