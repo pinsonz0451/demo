@@ -18,7 +18,7 @@ iverilog -g2001 -o sim/out/sim_top.out `
 if ($LASTEXITCODE -eq 0) {
   Write-Host "Compilation successful. Running simulation..." -ForegroundColor Green
   # Run vvp and capture output to sim/rpt/sim_report.txt using Tee-Object
-  vvp sim/out/sim_top.out | Tee-Object -FilePath "sim/rpt/sim_report.txt"
+  vvp sim/out/sim_top.out | Tee-Object -FilePath "sim/rpt/sim_top_report.txt"
   
   # Export wave to sim/wave
   If (Test-Path "tb_top.vcd") {
@@ -26,7 +26,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Waveform exported to sim/wave/tb_top.vcd" -ForegroundColor Cyan
   }
   
-  Write-Host "`nSimulation complete. Report saved to sim/rpt/sim_report.txt" -ForegroundColor Cyan
+  Write-Host "`nSimulation complete. Report saved to sim/rpt/sim_top_report.txt" -ForegroundColor Cyan
 }
 else {
   Write-Host "Compilation failed." -ForegroundColor Red
